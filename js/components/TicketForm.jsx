@@ -81,3 +81,158 @@ function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, on
         setErrores(nuevosErrores);
         return Object.keys(nuevosErrores).length === 0;
     }
+    /**
+     * Procesa el envío del formulario de compra.
+     * Ejecuta la validación, calcula el precio unitario y total según el tipo de boleto,
+     * construye el objeto de compra estructurado e invoca la función de confirmación.
+     * 
+     * @param {Event} evento - Evento de envío del formulario.
+     */
+    function manejarEnvio(evento) {
+        evento.preventDefault();
+
+        // Detiene el proceso si existen errores de validación
+        if (!validarFormulario()) {
+            return;
+        }
+
+        // Cálculo de costos unitario y total
+        const precioUnitario = funcion.precioBase * MULTIPLICADOR_TIPO_BOLETO[tipoBoleto];
+        const total = precioUnitario * cantidad;
+
+        // Construcción del registro de compra
+        const compra = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            peliculaId: pelicula.id,
+            peliculaTitulo: pelicula.titulo,
+            genero: pelicula.genero,
+            funcionId: funcion.id,
+            fechaFuncion: funcion.fecha,
+            horario: funcion.horario,
+            sala: funcion.sala,
+            nombre: nombre.trim(),
+            apellido: apellido.trim(),
+            cantidad,
+            tipoBoleto,
+            asientos: asientosSeleccionados,
+            precioUnitario,
+            total,
+            fecha: new Date().toISOString()
+        };
+
+        // Notifica al componente padre sobre la compra realizada
+        onConfirmarCompra(compra);
+    }
+
+    return (
+        <div className="card shadow-sm">
+            <div className="card-body">
+                {/* Encabezado con información de la película y función seleccionada */}
+                <div className="d-flex align-items-center gap-3 mb-3">
+                    {pelicula.posterUrl && (
+                        <img
+                            src={pelicula.posterUrl}
+                            alt={"Póster de " + pelicula.titulo}
+                            className="ticket-poster-thumb"
+                        />
+                    )}
+                    <div>
+                        <h4 className="card-title mb-1">{pelicula.titulo}</h4>
+                        <p className="text-muted mb-0">
+                            {formatearFecha(funcion.fecha)} · {funcion.horario} · {funcion.sala} · Precio base ${funcion.precioBase.toFixed(2)}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Formulario de captura de datos de compra */}
+                <form onSubmit={manejarEnvio}>
+                    {/* Campos de datos personales del comprador */}
+                    <div className="row">
+                        <div className="col-md-6 mb-3">
+                            <label className="form-label" htmlFor="nombre">Nombre</label>
+                            <input
+                                type="text"
+                                id="nombre"
+                                className="form-control"
+                                value={nombre}
+                                onChange={(e) => setNombre(e.target.value)}
+                            />
+                            {errores.nombre && (
+                                <p className="text-danger small mt-1 mb-0">{errores.nombre}</p>
+                            )}
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <label className="form-label" htmlFor="apellido">Apellido</label>
+                            <input
+                                type="text"
+                                id="apellido"
+                                className="form-control"
+                                value={apellido}
+                                onChange={(e) => setApellido(e.target.value)}
+                            />
+                            {errores.apellido && (
+                                <p className="text-danger small mt-1 mb-0">{errores.apellido}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Configuración de cantidad y categoría del boleto */}
+                    <div className="row">
+                        <div className="col-md-6 mb-3">
+                            <label className="form-label" htmlFor="cantidad">Cantidad de boletos</label>
+                            <input
+                                type="number"
+                                id="cantidad"
+                                className="form-control"
+                                min="1"
+                                max="6"
+                                value={cantidad}
+                                onChange={(e) => setCantidad(parseInt(e.target.value, 10) || 1)}
+                            />
+                            {errores.cantidad && (
+                                <p className="text-danger small mt-1 mb-0">{errores.cantidad}</p>
+                            )}
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <label className="form-label" htmlFor="tipoBoleto">Tipo de boleto</label>
+                            <select
+                                id="tipoBoleto"
+                                className="form-select"
+                                value={tipoBoleto}
+                                onChange={(e) => setTipoBoleto(e.target.value)}
+                            >
+                                <option value="General">General</option>
+                                <option value="Preferencial">Preferencial</option>
+                                <option value="VIP">VIP</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Módulo de selección de asientos en sala */}
+                    <SeatSelector
+                        ocupados={asientosOcupados}
+                        seleccionados={asientosSeleccionados}
+                        cantidad={cantidad}
+                        onToggleAsiento={alternarAsiento}
+                    />
+                    {errores.asientos && (
+                        <p className="text-danger small mb-3">{errores.asientos}</p>
+                    )}
+
+                    {/* Indicador del costo total calculado */}
+                    <p className="fw-bold fs-5">
+                        Total: ${(funcion.precioBase * MULTIPLICADOR_TIPO_BOLETO[tipoBoleto] * cantidad).toFixed(2)}
+                    </p>
+
+                    {/* Botones de acción para confirmar o cancelar */}
+                    <div className="d-flex gap-2">
+                        <button type="submit" className="btn btn-danger">Confirmar compra</button>
+                        <button type="button" className="btn btn-outline-secondary" onClick={onCancelar}>
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
