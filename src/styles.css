@@ -1,0 +1,104 @@
+/* Estilos personalizados del Sistema de Boletos de Cine (CENESTUR)
+   Complementa la estructura base provista por Bootstrap 5 */
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Distribución Sticky Footer: garantiza que el pie de página permanezca
+   en la base de la pantalla incluso con vistas de contenido reducido */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* Presentación y efectos de animación para tarjetas de películas */
+.movie-card {
+    transition: transform 0.15s ease-in-out;
+}
+
+.movie-card:hover {
+    transform: translateY(-4px);
+}
+
+.movie-poster {
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.movie-poster-img {
+    height: 220px;
+    width: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.ticket-poster-thumb {
+    width: 70px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+/* Cuadrícula interactiva y estados visuales de los asientos en sala */
+.seat-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    max-width: 320px;
+}
+
+.seat {
+    padding: 8px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.15s;
+}
+
+.seat-libre:hover {
+    background-color: #e2e6ea;
+}
+
+.seat-seleccionado {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+    border-color: #dc3545 !important;
+}
+
+.seat-ocupado {
+    background-color: #6c757d !important;
+    color: #ccc !important;
+    border-color: #6c757d !important;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+/* Elementos de muestra para la leyenda de asientos */
+.seat-legend {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 4px;
+    border: 1px solid #ccc;
+}
