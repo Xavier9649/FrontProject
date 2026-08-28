@@ -1,46 +1,41 @@
-// Módulo de Miguel: Generación y Descarga del Boleto en PDF
+// Generación y descarga de comprobantes en PDF
 import { jsPDF } from "jspdf";
 import { formatearFecha } from "../data/peliculas.js";
 
 /**
- * Función generarBoletoPDF
+ * Genera un comprobante en formato recibo (80mm x 150mm) y descarga el archivo PDF.
  * 
- * Genera un archivo PDF con formato de comprobante/recibo de cine (80mm x 150mm)
- * que resume los detalles de la compra realizada y activa su descarga automática
- * en el navegador del usuario.
- * 
- * @param {Object} compra - Objeto con los datos de la compra registrada.
+ * @param {Object} compra - Datos de la compra registrada.
  */
 export function generarBoletoPDF(compra) {
-    // Configura el formato del documento: dimensiones compactas estilo recibo de cine (80mm x 150mm)
+    // Configura el formato compacto del documento (80mm x 150mm)
     const doc = new jsPDF({ unit: "mm", format: [80, 150] });
     const centro = 40;
     const margen = 8;
     let y = 14;
 
-    // Encabezado principal del recibo
+    // Encabezado del comprobante
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.text("CENESTUR CINE", centro, y, { align: "center" });
     y += 6;
 
-    // Subtítulo del comprobante
+    // Subtítulo
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.text("Boleto de compra", centro, y, { align: "center" });
     y += 5;
 
-    // Línea divisoria superior
+    // Separador superior
     doc.setLineWidth(0.3);
     doc.line(margen, y, 80 - margen, y);
     y += 7;
 
     /**
-     * Imprime una fila con etiqueta en negrita y valor en texto regular,
-     * avanzando la posición vertical del cursor en el documento PDF.
+     * Agrega una fila de datos con etiqueta en negrita al documento.
      * 
-     * @param {string} etiqueta - Nombre descriptivo del campo.
-     * @param {string|number} valor - Contenido correspondiente al campo.
+     * @param {string} etiqueta - Nombre del campo.
+     * @param {string|number} valor - Valor del campo.
      */
     function fila(etiqueta, valor) {
         doc.setFont("helvetica", "bold");
@@ -53,7 +48,7 @@ export function generarBoletoPDF(compra) {
         y += 6.5;
     }
 
-    // Inserción de los detalles de la compra en el cuerpo del recibo
+    // Agrega el detalle de la compra
     fila("Película", compra.peliculaTitulo);
     fila("Función", formatearFecha(compra.fechaFuncion) + " · " + compra.horario + " · " + compra.sala);
     fila("Cliente", compra.nombre + " " + compra.apellido);
@@ -63,12 +58,12 @@ export function generarBoletoPDF(compra) {
     fila("Total pagado", "$" + compra.total.toFixed(2));
     fila("Fecha de compra", new Date(compra.fecha).toLocaleString());
 
-    // Línea divisoria inferior
+    // Separador inferior
     doc.setLineWidth(0.3);
     doc.line(margen, y, 80 - margen, y);
     y += 6;
 
-    // Pie de página con código de verificación e instrucciones para el cliente
+    // Pie del comprobante con código e instrucciones
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     doc.text("Código de boleto: " + compra.id, centro, y, { align: "center" });
@@ -78,6 +73,6 @@ export function generarBoletoPDF(compra) {
         maxWidth: 64
     });
 
-    // Guarda el archivo y dispara la descarga en el navegador
+    // Descarga el archivo PDF en el navegador
     doc.save("boleto_" + compra.id + ".pdf");
 }

@@ -1,22 +1,18 @@
 import React from "react";
 import MovieCard from "./MovieCard.jsx";
 
-// Módulo de Erick: Listado y Cuadrícula de Películas Filtradas
+// Cuadrícula de películas filtradas
 
 /**
- * Componente MovieList
- * 
- * Renderiza la colección de películas de la cartelera en una cuadrícula responsiva.
- * Si el conjunto de películas filtradas está vacío, muestra un mensaje de advertencia.
- * En caso contrario, genera una tarjeta MovieCard por cada película disponible.
+ * Renderiza la cuadrícula de películas o una alerta si no hay coincidencias.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Array<Object>} props.peliculas - Lista de películas que coinciden con los filtros aplicados.
- * @param {Function} props.onSeleccionarFuncion - Callback invocado al elegir una función específica.
- * @returns {JSX.Element} Elemento JSX que contiene la cuadrícula de películas o una alerta informativa.
+ * @param {Array<Object>} props.peliculas - Lista de películas filtradas.
+ * @param {Function} props.onSeleccionarFuncion - Inicia el flujo de compra de una función.
+ * @returns {JSX.Element} Cuadrícula de películas o alerta informativa.
  */
 export default function MovieList({ peliculas, onSeleccionarFuncion }) {
-    // Muestra una alerta informativa si no hay resultados que coincidan con la búsqueda o el género
+    // Mensaje si no hay resultados
     if (peliculas.length === 0) {
         return (
             <div className="alert alert-warning">
@@ -25,7 +21,7 @@ export default function MovieList({ peliculas, onSeleccionarFuncion }) {
         );
     }
 
-    // Renderiza la cuadrícula de tarjetas de películas
+    // Cuadrícula de películas
     return (
         <div className="row">
             {peliculas.map((pelicula) => (

@@ -11,31 +11,23 @@ import Statistics from "./components/Statistics.jsx";
 import { PELICULAS, MULTIPLICADOR_TIPO_BOLETO } from "./data/peliculas.js";
 import { generarBoletoPDF } from "./utils/pdfBoleto.js";
 
-// Componente Principal App: Integra los Módulos de Erick, Miguel y Jorge
+// Componente principal: coordina navegación, compras y estadísticas
 
 /**
- * Componente App
+ * Coordina las vistas de cartelera, compra, historial y estadísticas.
+ * Gestiona el estado global y la persistencia en LocalStorage.
  * 
- * Actúa como el contenedor y coordinador principal de toda la aplicación.
- * Integra los módulos desarrollados por el equipo:
- * - Módulo de Erick: Cartelera, filtrado por género, búsqueda y navegación.
- * - Módulo de Miguel: Formulario de compra, selección de asientos y generación de comprobante PDF.
- * - Módulo de Jorge: Historial de compras con operaciones CRUD y panel de estadísticas.
- * 
- * Gestiona el estado global de navegación, la persistencia en LocalStorage y distribuye
- * los datos y manejadores de eventos hacia cada uno de los componentes hijos.
- * 
- * @returns {JSX.Element} Elemento JSX que estructura la barra de navegación, la vista activa y el pie de página.
+ * @returns {JSX.Element} Aplicación principal.
  */
 export default function App() {
-    // Estados principales de navegación y filtrado en cartelera
+    // Estados de navegación, filtros y selección
     const [vista, setVista] = useState("cartelera");
     const [generoFiltro, setGeneroFiltro] = useState("Todos");
     const [busquedaCartelera, setBusquedaCartelera] = useState("");
-    const [seleccion, setSeleccion] = useState(null); // Objeto con la película y función seleccionada: { pelicula, funcion }
+    const [seleccion, setSeleccion] = useState(null);
     const [ultimaCompra, setUltimaCompra] = useState(null);
 
-    // Estado persistente del historial de compras con carga inicial desde LocalStorage
+    // Historial de compras con carga inicial desde LocalStorage
     const [compras, setCompras] = useState(() => {
         try {
             const guardado = localStorage.getItem("cineCompras");
@@ -46,12 +38,12 @@ export default function App() {
         }
     });
 
-    // Sincroniza y guarda el historial de compras en LocalStorage ante cualquier modificación
+    // Guarda el historial en LocalStorage ante cada cambio
     useEffect(() => {
         localStorage.setItem("cineCompras", JSON.stringify(compras));
     }, [compras]);
 
-    // Actualiza dinámicamente el título de la pestaña del navegador según la sección activa
+    // Actualiza el título del documento según la vista activa
     useEffect(() => {
         const titulos = {
             cartelera: "Cartelera",
@@ -62,10 +54,10 @@ export default function App() {
         document.title = "CENESTUR Cine · " + (titulos[vista] || "");
     }, [vista]);
 
-    // Extrae la lista de géneros únicos disponibles en el catálogo de películas
+    // Obtiene géneros únicos del catálogo
     const generos = [...new Set(PELICULAS.map((p) => p.genero))];
 
-    // Aplica los filtros de género y término de búsqueda sobre el catálogo de películas
+    // Aplica filtros de género y búsqueda sobre la cartelera
     const peliculasFiltradas = PELICULAS.filter((p) => {
         const coincideGenero = generoFiltro === "Todos" || p.genero === generoFiltro;
         const coincideBusqueda = p.titulo
@@ -75,10 +67,10 @@ export default function App() {
     });
 
     /**
-     * Prepara e inicia el flujo de compra para una película y función específicas.
+     * Inicia el flujo de compra para la película y función seleccionadas.
      * 
-     * @param {Object} pelicula - Datos de la película seleccionada.
-     * @param {Object} funcion - Datos de la función seleccionada.
+     * @param {Object} pelicula - Película elegida.
+     * @param {Object} funcion - Función elegida.
      */
     function manejarSeleccionFuncion(pelicula, funcion) {
         setSeleccion({ pelicula, funcion });
@@ -87,10 +79,9 @@ export default function App() {
     }
 
     /**
-     * Registra una nueva compra en el estado global, actualiza la última compra realizada
-     * y genera automáticamente el boleto en formato PDF.
+     * Registra la compra completada y genera el comprobante PDF.
      * 
-     * @param {Object} compra - Objeto con los datos detallados de la compra completada.
+     * @param {Object} compra - Datos de la compra.
      */
     function manejarConfirmarCompra(compra) {
         setCompras((prev) => [...prev, compra]);
@@ -99,20 +90,19 @@ export default function App() {
     }
 
     /**
-     * Elimina un registro de compra del historial a partir de su identificador.
+     * Elimina una compra del historial por su identificador.
      * 
-     * @param {number|string} id - Identificador de la compra que se desea eliminar.
+     * @param {number|string} id - Identificador de la compra.
      */
     function manejarEliminarCompra(id) {
         setCompras((prev) => prev.filter((c) => c.id !== id));
     }
 
     /**
-     * Aplica modificaciones sobre una compra existente en el historial,
-     * recalculando el precio unitario y total si se modifica el tipo de boleto.
+     * Modifica una compra existente y recalcula tarifas si cambia el tipo de boleto.
      * 
-     * @param {number|string} id - Identificador de la compra a editar.
-     * @param {Object} cambios - Objeto con los campos modificados (nombre, apellido, tipoBoleto).
+     * @param {number|string} id - Identificador de la compra.
+     * @param {Object} cambios - Campos modificados.
      */
     function manejarEditarCompra(id, cambios) {
         setCompras((prev) =>
@@ -133,11 +123,10 @@ export default function App() {
     }
 
     /**
-     * Consulta y extrae la lista de asientos ya ocupados para una función determinada
-     * a partir de todas las compras previamente registradas.
+     * Obtiene los asientos ocupados para una función específica.
      * 
-     * @param {number|string} funcionId - Identificador de la función a consultar.
-     * @returns {Array<string>} Lista plana de identificadores de asientos ocupados.
+     * @param {number|string} funcionId - Identificador de la función.
+     * @returns {Array<string>} Lista de asientos ocupados.
      */
     function obtenerAsientosOcupados(funcionId) {
         return compras
@@ -147,12 +136,12 @@ export default function App() {
 
     return (
         <React.Fragment>
-            {/* Barra de navegación superior (Módulo de Erick) */}
+            {/* Barra de navegación superior */}
             <Navbar vistaActual={vista} onCambiarVista={setVista} />
 
-            {/* Contenedor principal con vistas condicionales */}
+            {/* Contenedor principal de vistas */}
             <main className="container py-4">
-                {/* Vista 1: Cartelera de películas con búsqueda y filtros (Módulo de Erick) */}
+                {/* Vista: Cartelera */}
                 {vista === "cartelera" && (
                     <div>
                         <h2 className="mb-3">Cartelera</h2>
@@ -175,7 +164,7 @@ export default function App() {
                     </div>
                 )}
 
-                {/* Vista 2A: Formulario interactivo de compra de boletos (Módulo de Miguel) */}
+                {/* Vista: Formulario de compra */}
                 {vista === "compra" && seleccion && !ultimaCompra && (
                     <TicketForm
                         pelicula={seleccion.pelicula}
@@ -186,7 +175,7 @@ export default function App() {
                     />
                 )}
 
-                {/* Vista 2B: Resumen de confirmación posterior a la compra (Módulo de Miguel) */}
+                {/* Vista: Resumen de compra */}
                 {vista === "compra" && ultimaCompra && (
                     <PurchaseSummary
                         compra={ultimaCompra}
@@ -203,14 +192,14 @@ export default function App() {
                     />
                 )}
 
-                {/* Vista 2C: Mensaje de advertencia si se accede a compra sin seleccionar función */}
+                {/* Mensaje de selección requerida */}
                 {vista === "compra" && !seleccion && (
                     <div className="alert alert-warning">
                         Primero elige una película y función desde la cartelera.
                     </div>
                 )}
 
-                {/* Vista 3: Historial y administración de compras (Módulo de Jorge) */}
+                {/* Vista: Historial de compras */}
                 {vista === "historial" && (
                     <PurchaseList
                         compras={compras}
@@ -219,11 +208,11 @@ export default function App() {
                     />
                 )}
 
-                {/* Vista 4: Panel analítico de estadísticas de ventas (Módulo de Jorge) */}
+                {/* Vista: Estadísticas */}
                 {vista === "estadisticas" && <Statistics compras={compras} />}
             </main>
 
-            {/* Pie de página institucional (Módulo de Erick) */}
+            {/* Pie de página */}
             <Footer />
         </React.Fragment>
     );

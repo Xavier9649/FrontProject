@@ -1,13 +1,11 @@
-/* Estilos personalizados del Sistema de Boletos de Cine (CENESTUR)
-   Complementa la estructura base provista por Bootstrap 5 */
+/* Estilos personalizados del Sistema de Boletos de Cine */
 
 body {
     background-color: #f4f4f4;
     color: #333;
 }
 
-/* Distribución Sticky Footer: garantiza que el pie de página permanezca
-   en la base de la pantalla incluso con vistas de contenido reducido */
+/* Distribución Sticky Footer */
 #root {
     display: flex;
     flex-direction: column;
@@ -18,7 +16,7 @@ main {
     flex: 1 0 auto;
 }
 
-/* Presentación y efectos de animación para tarjetas de películas */
+/* Tarjetas de películas y efectos */
 .movie-card {
     transition: transform 0.15s ease-in-out;
 }
@@ -54,7 +52,7 @@ main {
     flex-shrink: 0;
 }
 
-/* Cuadrícula interactiva y estados visuales de los asientos en sala */
+/* Cuadrícula y estados de asientos */
 .seat-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -92,7 +90,7 @@ main {
     text-decoration: line-through;
 }
 
-/* Elementos de muestra para la leyenda de asientos */
+/* Muestras de color para la leyenda */
 .seat-legend {
     display: inline-block;
     width: 14px;

@@ -1,29 +1,24 @@
 import React, { useState } from "react";
 import { formatearFecha } from "../data/peliculas.js";
 
-// Módulo de Erick: Tarjeta de Presentación de Película y sus Funciones
+// Tarjeta de película y funciones disponibles
 
 /**
- * Componente MovieCard
- * 
- * Presenta la información individual de una película en la cartelera.
- * Incluye su póster promocional (con respaldo de color si la imagen no carga),
- * detalles de género, clasificación por edad, duración en minutos y los botones
- * interactivos de cada una de sus funciones programadas.
+ * Muestra la ficha de una película con póster, datos técnicos y horarios de funciones.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Object} props.pelicula - Datos de la película (título, póster, género, clasificación, funciones, etc.).
- * @param {Function} props.onSeleccionarFuncion - Callback que se ejecuta al seleccionar una función para iniciar la compra.
- * @returns {JSX.Element} Elemento JSX que contiene la tarjeta de la película.
+ * @param {Object} props.pelicula - Datos de la película.
+ * @param {Function} props.onSeleccionarFuncion - Inicia el flujo de compra para la función elegida.
+ * @returns {JSX.Element} Tarjeta de película.
  */
 export default function MovieCard({ pelicula, onSeleccionarFuncion }) {
-    // Estado local para controlar si la imagen remota del póster presenta un error de carga
+    // Controla errores de carga en la imagen del póster
     const [errorImagen, setErrorImagen] = useState(false);
 
     return (
         <div className="col-md-6 col-lg-4 mb-4">
             <div className="card h-100 shadow-sm movie-card">
-                {/* Póster de la película: usa imagen remota o cuadro con color de respaldo */}
+                {/* Póster con imagen remota o color de respaldo */}
                 {!pelicula.posterUrl || errorImagen ? (
                     <div
                         className="movie-poster"

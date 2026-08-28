@@ -1,24 +1,20 @@
 import React from "react";
 
-// Módulo de Erick: Barra de Filtros de la Cartelera por Género
+// Barra de filtros por género cinematográfico
 
 /**
- * Componente FilterBar
- * 
- * Despliega un conjunto de botones de acceso rápido para filtrar la cartelera
- * por categoría o género cinematográfico (por ejemplo, Acción, Comedia, Terror, etc.),
- * permitiendo además restablecer el filtro para visualizar todas las películas.
+ * Muestra los botones de filtro por género cinematográfico.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Array<string>} props.generos - Lista de nombres únicos de géneros disponibles en el catálogo.
- * @param {string} props.generoSeleccionado - Género actualmente activo en el filtro.
- * @param {Function} props.onCambiarGenero - Callback para actualizar el género seleccionado.
- * @returns {JSX.Element} Elemento JSX que contiene la botonera de filtrado por género.
+ * @param {Array<string>} props.generos - Lista de géneros disponibles.
+ * @param {string} props.generoSeleccionado - Género activo.
+ * @param {Function} props.onCambiarGenero - Actualiza el filtro de género.
+ * @returns {JSX.Element} Botonera de filtros.
  */
 export default function FilterBar({ generos, generoSeleccionado, onCambiarGenero }) {
     return (
         <div className="d-flex flex-wrap gap-2 mb-4">
-            {/* Botón para restablecer el filtro y mostrar todas las películas */}
+            {/* Botón para restablecer y mostrar todos los géneros */}
             <button
                 type="button"
                 className={
@@ -30,7 +26,7 @@ export default function FilterBar({ generos, generoSeleccionado, onCambiarGenero
                 Todos
             </button>
 
-            {/* Generación dinámica de botones para cada género disponible */}
+            {/* Botones por cada género disponible */}
             {generos.map((genero) => (
                 <button
                     key={genero}

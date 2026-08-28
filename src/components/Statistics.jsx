@@ -1,21 +1,17 @@
 import React from "react";
 import { formatearFecha } from "../data/peliculas.js";
 
-// Módulo de Jorge: Panel de Estadísticas Calculadas a partir de las Compras Guardadas
+// Panel de estadísticas de ventas
 
 /**
- * Componente Statistics
- * 
- * Calcula y presenta estadísticas globales del sistema de ventas en tiempo real,
- * tales como la cantidad total de transacciones realizadas, el volumen de boletos vendidos,
- * la recaudación monetaria acumulada, el ranking de películas y la distribución de boletos por sala y por día.
+ * Calcula y presenta indicadores cuantitativos y rankings de ventas.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Array<Object>} props.compras - Listado de todas las compras registradas en el sistema.
- * @returns {JSX.Element} Elemento JSX con las tarjetas informativas y gráficos de barras de progreso.
+ * @param {Array<Object>} props.compras - Lista de compras registradas.
+ * @returns {JSX.Element} Panel de estadísticas y gráficos de progreso.
  */
 export default function Statistics({ compras }) {
-    // Si no existen compras en el historial, muestra un mensaje informativo
+    // Alerta si no hay compras registradas
     if (compras.length === 0) {
         return (
             <div className="alert alert-info">
@@ -24,26 +20,27 @@ export default function Statistics({ compras }) {
         );
     }
 
-    // Cálculo de métricas cuantitativas generales
+    // Cálculo de métricas globales
     const totalCompras = compras.length;
     const totalBoletos = compras.reduce((suma, c) => suma + c.cantidad, 0);
     const recaudacion = compras.reduce((suma, c) => suma + c.total, 0);
+    const ticketPromedio = totalCompras > 0 ? recaudacion / totalCompras : 0;
 
-    // Agrupación y conteo de boletos vendidos por cada película
+    // Agrupación y conteo de boletos por película
     const conteoPorPelicula = {};
     compras.forEach((compra) => {
         const titulo = compra.peliculaTitulo;
         conteoPorPelicula[titulo] = (conteoPorPelicula[titulo] || 0) + compra.cantidad;
     });
 
-    // Ordenamiento descendente del ranking de popularidad según la cantidad de boletos
+    // Ranking descendente de películas por boletos vendidos
     const ranking = Object.entries(conteoPorPelicula)
         .sort((a, b) => b[1] - a[1]);
 
-    // Obtiene el valor máximo de boletos vendidos para calcular la proporción de la barra de progreso
+    // Máximo de boletos para escala de barras
     const maxBoletos = ranking.length > 0 ? ranking[0][1] : 0;
 
-    // Agrupación y conteo de boletos vendidos por sala
+    // Agrupación y conteo de boletos por sala
     const conteoPorSala = {};
     compras.forEach((compra) => {
         const sala = compra.sala || "Sin sala";
@@ -53,7 +50,7 @@ export default function Statistics({ compras }) {
         .sort((a, b) => b[1] - a[1]);
     const maxBoletosSala = rankingSalas.length > 0 ? rankingSalas[0][1] : 0;
 
-    // Agrupación y conteo de boletos vendidos por día/fecha de función
+    // Agrupación y conteo de boletos por fecha
     const conteoPorFecha = {};
     compras.forEach((compra) => {
         const fecha = compra.fechaFuncion || "Sin fecha";
@@ -65,38 +62,46 @@ export default function Statistics({ compras }) {
 
     return (
         <div>
-            {/* Título de la sección de estadísticas */}
+            {/* Título de estadísticas */}
             <h3 className="mb-3">Estadísticas</h3>
 
-            {/* Tarjetas de indicadores clave de rendimiento (KPIs) */}
+            {/* Indicadores clave (KPIs) */}
             <div className="row mb-4">
-                <div className="col-md-4 mb-3">
-                    <div className="card text-center shadow-sm">
+                <div className="col-sm-6 col-lg-3 mb-3">
+                    <div className="card text-center shadow-sm h-100">
                         <div className="card-body">
                             <p className="text-muted mb-1">Total de compras</p>
                             <p className="fs-3 fw-bold mb-0">{totalCompras}</p>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4 mb-3">
-                    <div className="card text-center shadow-sm">
+                <div className="col-sm-6 col-lg-3 mb-3">
+                    <div className="card text-center shadow-sm h-100">
                         <div className="card-body">
                             <p className="text-muted mb-1">Boletos vendidos</p>
                             <p className="fs-3 fw-bold mb-0">{totalBoletos}</p>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4 mb-3">
-                    <div className="card text-center shadow-sm">
+                <div className="col-sm-6 col-lg-3 mb-3">
+                    <div className="card text-center shadow-sm h-100">
                         <div className="card-body">
-                            <p className="text-muted mb-1">Recaudación simulada</p>
+                            <p className="text-muted mb-1">Recaudación</p>
                             <p className="fs-3 fw-bold mb-0">${recaudacion.toFixed(2)}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-sm-6 col-lg-3 mb-3">
+                    <div className="card text-center shadow-sm h-100">
+                        <div className="card-body">
+                            <p className="text-muted mb-1">Ticket promedio</p>
+                            <p className="fs-3 fw-bold mb-0">${ticketPromedio.toFixed(2)}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Panel con el ranking de películas y estadísticas por sala y por fecha */}
+            {/* Rankings y distribución por sala y fecha */}
             <div className="row g-3">
                 <div className="col-lg-6">
                     <div className="card shadow-sm h-100">
