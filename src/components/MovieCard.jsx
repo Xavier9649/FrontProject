@@ -40,18 +40,18 @@ export default function MovieCard({ pelicula, onSeleccionarFuncion }) {
                     />
                 )}
 
-                {/* Cuerpo de la tarjeta con ficha técnica y funciones disponibles */}
+                {/* Datos técnicos y funciones */}
                 <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{pelicula.titulo}</h5>
 
-                    {/* Insignias con metadatos de la película */}
+                    {/* Etiquetas de género, clasificación y duración */}
                     <p className="mb-1">
                         <span className="badge bg-secondary me-1">{pelicula.genero}</span>
-                        <span className="badge bg-info text-dark me-1">{pelicula.clasificacion}</span>
+                        <span className={"badge me-1 " + claseClasificacion}>{pelicula.clasificacion}</span>
                         <span className="badge bg-light text-dark">{pelicula.duracion} min</span>
                     </p>
 
-                    {/* Lista interactiva de horarios y salas de funciones */}
+                    {/* Horarios y salas disponibles */}
                     <p className="fw-bold mt-2 mb-1">Funciones disponibles:</p>
                     <div className="d-flex flex-wrap gap-2 mt-auto">
                         {pelicula.funciones.map((funcion) => (
