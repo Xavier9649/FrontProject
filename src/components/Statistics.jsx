@@ -24,6 +24,7 @@ export default function Statistics({ compras }) {
     const totalCompras = compras.length;
     const totalBoletos = compras.reduce((suma, c) => suma + c.cantidad, 0);
     const recaudacion = compras.reduce((suma, c) => suma + c.total, 0);
+    const ticketPromedio = totalCompras > 0 ? recaudacion / totalCompras : 0;
 
     // Agrupación y conteo de boletos por película
     const conteoPorPelicula = {};
@@ -66,27 +67,35 @@ export default function Statistics({ compras }) {
 
             {/* Indicadores clave (KPIs) */}
             <div className="row mb-4">
-                <div className="col-md-4 mb-3">
-                    <div className="card text-center shadow-sm">
+                <div className="col-sm-6 col-lg-3 mb-3">
+                    <div className="card text-center shadow-sm h-100">
                         <div className="card-body">
                             <p className="text-muted mb-1">Total de compras</p>
                             <p className="fs-3 fw-bold mb-0">{totalCompras}</p>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4 mb-3">
-                    <div className="card text-center shadow-sm">
+                <div className="col-sm-6 col-lg-3 mb-3">
+                    <div className="card text-center shadow-sm h-100">
                         <div className="card-body">
                             <p className="text-muted mb-1">Boletos vendidos</p>
                             <p className="fs-3 fw-bold mb-0">{totalBoletos}</p>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4 mb-3">
-                    <div className="card text-center shadow-sm">
+                <div className="col-sm-6 col-lg-3 mb-3">
+                    <div className="card text-center shadow-sm h-100">
                         <div className="card-body">
-                            <p className="text-muted mb-1">Recaudación simulada</p>
+                            <p className="text-muted mb-1">Recaudación</p>
                             <p className="fs-3 fw-bold mb-0">${recaudacion.toFixed(2)}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-sm-6 col-lg-3 mb-3">
+                    <div className="card text-center shadow-sm h-100">
+                        <div className="card-body">
+                            <p className="text-muted mb-1">Ticket promedio</p>
+                            <p className="fs-3 fw-bold mb-0">${ticketPromedio.toFixed(2)}</p>
                         </div>
                     </div>
                 </div>
