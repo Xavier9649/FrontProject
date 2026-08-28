@@ -42,7 +42,7 @@ export default function MovieCard({ pelicula, onSeleccionarFuncion }) {
                     {/* Etiquetas de género, clasificación y duración */}
                     <p className="mb-1">
                         <span className="badge bg-secondary me-1">{pelicula.genero}</span>
-                        <span className="badge bg-info text-dark me-1">{pelicula.clasificacion}</span>
+                        <span className={"badge me-1 " + claseClasificacion}>{pelicula.clasificacion}</span>
                         <span className="badge bg-light text-dark">{pelicula.duracion} min</span>
                     </p>
 
