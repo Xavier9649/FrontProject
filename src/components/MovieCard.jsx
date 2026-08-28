@@ -1,29 +1,24 @@
 import React, { useState } from "react";
 import { formatearFecha } from "../data/peliculas.js";
 
-// Módulo de Erick: Tarjeta de Presentación de Película y sus Funciones
+// Tarjeta de película y funciones disponibles
 
 /**
- * Componente MovieCard
- * 
- * Presenta la información individual de una película en la cartelera.
- * Incluye su póster promocional (con respaldo de color si la imagen no carga),
- * detalles de género, clasificación por edad, duración en minutos y los botones
- * interactivos de cada una de sus funciones programadas.
+ * Muestra la ficha de una película con póster, datos técnicos y horarios de funciones.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Object} props.pelicula - Datos de la película (título, póster, género, clasificación, funciones, etc.).
- * @param {Function} props.onSeleccionarFuncion - Callback que se ejecuta al seleccionar una función para iniciar la compra.
- * @returns {JSX.Element} Elemento JSX que contiene la tarjeta de la película.
+ * @param {Object} props.pelicula - Datos de la película.
+ * @param {Function} props.onSeleccionarFuncion - Inicia el flujo de compra para la función elegida.
+ * @returns {JSX.Element} Tarjeta de película.
  */
 export default function MovieCard({ pelicula, onSeleccionarFuncion }) {
-    // Estado local para controlar si la imagen remota del póster presenta un error de carga
+    // Controla errores de carga en la imagen del póster
     const [errorImagen, setErrorImagen] = useState(false);
 
     return (
         <div className="col-md-6 col-lg-4 mb-4">
             <div className="card h-100 shadow-sm movie-card">
-                {/* Póster de la película: usa imagen remota o cuadro con color de respaldo */}
+                {/* Póster con imagen remota o color de respaldo */}
                 {!pelicula.posterUrl || errorImagen ? (
                     <div
                         className="movie-poster"
@@ -40,18 +35,18 @@ export default function MovieCard({ pelicula, onSeleccionarFuncion }) {
                     />
                 )}
 
-                {/* Cuerpo de la tarjeta con ficha técnica y funciones disponibles */}
+                {/* Datos técnicos y funciones */}
                 <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{pelicula.titulo}</h5>
 
-                    {/* Insignias con metadatos de la película */}
+                    {/* Etiquetas de género, clasificación y duración */}
                     <p className="mb-1">
                         <span className="badge bg-secondary me-1">{pelicula.genero}</span>
                         <span className="badge bg-info text-dark me-1">{pelicula.clasificacion}</span>
                         <span className="badge bg-light text-dark">{pelicula.duracion} min</span>
                     </p>
 
-                    {/* Lista interactiva de horarios y salas de funciones */}
+                    {/* Horarios y salas disponibles */}
                     <p className="fw-bold mt-2 mb-1">Funciones disponibles:</p>
                     <div className="d-flex flex-wrap gap-2 mt-auto">
                         {pelicula.funciones.map((funcion) => (

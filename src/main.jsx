@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
 import App from "./App.jsx";
 
-// Punto de Entrada: Inicialización y Montaje de la Aplicación React con Vite
+// Punto de entrada: inicialización y montaje de la aplicación
 const contenedor = document.getElementById("root");
 const raiz = ReactDOM.createRoot(contenedor);
 

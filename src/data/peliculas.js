@@ -1,10 +1,7 @@
-// Módulo de Datos y Utilidades de Cartelera: Catálogo, Tarifas, Asientos y Formateo
+// Catálogo de películas, tarifas y utilidades de cartelera
 
 /**
- * Catálogo general de películas disponibles en cartelera durante agosto de 2026.
- * Incluye metadatos descriptivos (título, género, duración, clasificación, póster)
- * y la programación de funciones disponibles con sus respectivos horarios, salas y precios base.
- * Los enlaces de los pósters provienen de imágenes de dominio público/educativo de Wikipedia.
+ * Catálogo general de películas con datos técnicos y funciones programadas.
  */
 export const PELICULAS = [
     {
@@ -91,8 +88,7 @@ export const PELICULAS = [
 ];
 
 /**
- * Factores de multiplicación de precio según la categoría del boleto.
- * El importe base de la función se multiplica por este factor para determinar el precio final.
+ * Factores de multiplicación de precio por categoría de boleto.
  */
 export const MULTIPLICADOR_TIPO_BOLETO = {
     General: 1,
@@ -101,13 +97,9 @@ export const MULTIPLICADOR_TIPO_BOLETO = {
 };
 
 /**
- * Función generarMapaAsientos
+ * Genera la cuadrícula de asientos estándar para una sala (4 filas x 6 columnas).
  * 
- * Construye la distribución alfanumérica estándar de asientos para una sala de cine.
- * Genera una matriz de 4 filas identificadas con letras (A a D) y 6 columnas numeradas (1 a 6),
- * totalizando 24 asientos por sala.
- * 
- * @returns {Array<string>} Arreglo con las etiquetas de los asientos (ej. ["A1", "A2", ..., "D6"]).
+ * @returns {Array<string>} Lista de códigos de asientos (ej. ["A1", ..., "D6"]).
  */
 export function generarMapaAsientos() {
     const filas = ["A", "B", "C", "D"];
@@ -121,18 +113,15 @@ export function generarMapaAsientos() {
 }
 
 /**
- * Mapa de asientos precalculado y compartido por todas las salas.
+ * Mapa de asientos compartido para las salas.
  */
 export const MAPA_ASIENTOS = generarMapaAsientos();
 
 /**
- * Función formatearFecha
+ * Formatea una fecha ISO ("YYYY-MM-DD") a formato legible en español (ej. "Lun, 24 ago").
  * 
- * Transforma una fecha en formato ISO estándar ("YYYY-MM-DD") en una cadena amigable
- * y legible en idioma español con día de la semana y mes abreviados (ej. "Lun, 24 ago").
- * 
- * @param {string} fechaISO - Cadena de fecha en formato "YYYY-MM-DD".
- * @returns {string} Fecha formateada y capitalizada para su presentación al usuario.
+ * @param {string} fechaISO - Cadena de fecha en formato ISO.
+ * @returns {string} Fecha formateada.
  */
 export function formatearFecha(fechaISO) {
     if (!fechaISO) {

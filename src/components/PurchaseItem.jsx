@@ -1,32 +1,26 @@
 import React, { useState } from "react";
 import { formatearFecha } from "../data/peliculas.js";
 
-// Módulo de Jorge: Fila Individual del Historial con Modo de Edición y Eliminación
+// Fila del historial de compras con edición y eliminación
 
 /**
- * Componente PurchaseItem
- * 
- * Representa una fila individual dentro de la tabla del historial de compras.
- * Permite visualizar el detalle completo de la transacción y alternar a un modo
- * de edición en línea para modificar los datos del cliente o la categoría del boleto,
- * además de gestionar la eliminación de la compra con confirmación previa.
+ * Fila individual del historial con visualización, edición en línea y eliminación.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Object} props.compra - Objeto con los datos de la compra individual.
- * @param {Function} props.onEliminar - Callback para eliminar la compra actual.
- * @param {Function} props.onEditar - Callback para aplicar las modificaciones realizadas a la compra.
- * @returns {JSX.Element} Elemento JSX que representa una fila (`<tr>`) en modo lectura o edición.
+ * @param {Object} props.compra - Datos de la compra.
+ * @param {Function} props.onEliminar - Elimina la compra.
+ * @param {Function} props.onEditar - Guarda los cambios de la compra.
+ * @returns {JSX.Element} Fila de tabla en modo lectura o edición.
  */
 export default function PurchaseItem({ compra, onEliminar, onEditar }) {
-    // Estados locales para alternar el modo edición y almacenar los valores temporales de los campos
+    // Estados para modo de edición y campos temporales
     const [editando, setEditando] = useState(false);
     const [nombre, setNombre] = useState(compra.nombre);
     const [apellido, setApellido] = useState(compra.apellido);
     const [tipoBoleto, setTipoBoleto] = useState(compra.tipoBoleto);
 
     /**
-     * Valida y guarda las modificaciones realizadas en la compra.
-     * Comprueba que los campos de texto no estén vacíos antes de notificar los cambios.
+     * Valida y emite las modificaciones de la compra.
      */
     function guardarCambios() {
         if (!nombre.trim() || !apellido.trim()) {
@@ -38,7 +32,7 @@ export default function PurchaseItem({ compra, onEliminar, onEditar }) {
     }
 
     /**
-     * Cancela la edición y restablece los valores originales de la compra.
+     * Cancela la edición y restaura los datos originales.
      */
     function cancelarEdicion() {
         setNombre(compra.nombre);
@@ -48,7 +42,7 @@ export default function PurchaseItem({ compra, onEliminar, onEditar }) {
     }
 
     /**
-     * Solicita confirmación al usuario antes de eliminar el registro de compra.
+     * Solicita confirmación y ejecuta la eliminación del registro.
      */
     function manejarEliminar() {
         const confirmado = window.confirm(
@@ -59,7 +53,7 @@ export default function PurchaseItem({ compra, onEliminar, onEditar }) {
         }
     }
 
-    // Renderizado en modo edición: muestra campos de entrada en la misma fila de la tabla
+    // Vista en modo edición
     if (editando) {
         return (
             <tr>
@@ -99,7 +93,7 @@ export default function PurchaseItem({ compra, onEliminar, onEditar }) {
         );
     }
 
-    // Renderizado en modo lectura: muestra los datos de la compra formateados con botones de acción
+    // Vista en modo lectura
     return (
         <tr>
             <td>{compra.peliculaTitulo}</td>

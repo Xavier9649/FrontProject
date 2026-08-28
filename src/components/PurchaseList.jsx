@@ -2,28 +2,23 @@ import React, { useState } from "react";
 import SearchBar from "./SearchBar.jsx";
 import PurchaseItem from "./PurchaseItem.jsx";
 
-// Módulo de Jorge: Listado de Compras con Búsqueda, Filtro por Categoría y Operaciones CRUD
+// Historial de compras con búsqueda y filtrado por categoría
 
 /**
- * Componente PurchaseList
- * 
- * Despliega el historial completo de compras registradas en una tabla estructurada.
- * Proporciona controles interactivos para buscar transacciones por película o cliente,
- * filtrar por categoría de boleto (General, Preferencial, VIP) y delegar operaciones
- * de edición o eliminación en cada elemento.
+ * Muestra la tabla del historial de compras con filtros de búsqueda y categoría.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Array<Object>} props.compras - Listado de compras registradas.
- * @param {Function} props.onEliminar - Callback para eliminar un registro por su ID.
- * @param {Function} props.onEditar - Callback para guardar los cambios editados en una compra.
- * @returns {JSX.Element} Elemento JSX que contiene el buscador, los filtros y la tabla de compras.
+ * @param {Array<Object>} props.compras - Lista de compras registradas.
+ * @param {Function} props.onEliminar - Elimina un registro por ID.
+ * @param {Function} props.onEditar - Aplica cambios a una compra existente.
+ * @returns {JSX.Element} Historial de compras.
  */
 export default function PurchaseList({ compras, onEliminar, onEditar }) {
-    // Estados locales para el término de búsqueda y el filtro de categoría
+    // Estados de búsqueda y filtro de categoría
     const [busqueda, setBusqueda] = useState("");
     const [tipoFiltro, setTipoFiltro] = useState("Todos");
 
-    // Filtra las compras evaluando la coincidencia de texto y la categoría de boleto
+    // Filtra las compras por texto y tipo de boleto
     const comprasFiltradas = compras.filter((compra) => {
         const texto = busqueda.trim().toLowerCase();
         const coincideTexto =
@@ -39,10 +34,10 @@ export default function PurchaseList({ compras, onEliminar, onEditar }) {
 
     return (
         <div>
-            {/* Título de la sección del historial */}
+            {/* Título del historial */}
             <h3 className="mb-3">Historial de compras</h3>
 
-            {/* Barra de herramientas: Búsqueda por texto y selector de categoría */}
+            {/* Controles de búsqueda y filtro */}
             <div className="row">
                 <div className="col-md-8">
                     <SearchBar valor={busqueda} onCambiar={setBusqueda} />
@@ -63,7 +58,7 @@ export default function PurchaseList({ compras, onEliminar, onEditar }) {
                 </div>
             </div>
 
-            {/* Renderizado condicional: mensaje de alerta si no hay resultados o tabla con registros */}
+            {/* Mensaje si no hay resultados o tabla con registros */}
             {comprasFiltradas.length === 0 ? (
                 <div className="alert alert-info">No hay compras registradas con esos criterios.</div>
             ) : (
