@@ -1,38 +1,53 @@
 import React from "react";
 import { MAPA_ASIENTOS } from "../data/peliculas.js";
 
-// Módulo de Miguel: Selección de Asientos
+// Selector interactivo de asientos
 
 /**
- * Componente SeatSelector
- * 
- * Permite al usuario seleccionar de forma visual e interactiva los asientos de la sala de cine.
- * Controla la disponibilidad de los asientos, previene la selección de asientos ocupados
- * y limita la cantidad de asientos elegibles según el número de boletos solicitado.
+ * Cuadrícula interactiva para la selección de asientos según disponibilidad y cantidad.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Array<string>} props.ocupados - Lista de identificadores de asientos ya reservados en la función.
- * @param {Array<string>} props.seleccionados - Lista de identificadores de asientos seleccionados por el usuario.
- * @param {number} props.cantidad - Cantidad total de boletos que el usuario desea comprar.
- * @param {Function} props.onToggleAsiento - Función callback que se ejecuta al seleccionar o deseleccionar un asiento.
- * @returns {JSX.Element} Elemento JSX que contiene la cuadrícula de asientos y su leyenda explicativa.
+ * @param {Array<string>} props.ocupados - Asientos no disponibles.
+ * @param {Array<string>} props.seleccionados - Asientos elegidos por el usuario.
+ * @param {number} props.cantidad - Límite de asientos a elegir.
+ * @param {Function} props.onToggleAsiento - Alterna la selección de un asiento.
+ * @param {Function} [props.onLimpiarSeleccion] - Deselecciona todos los asientos elegidos.
+ * @returns {JSX.Element} Selector de asientos y leyenda de estados.
  */
-export default function SeatSelector({ ocupados, seleccionados, cantidad, onToggleAsiento }) {
+export default function SeatSelector({ ocupados, seleccionados, cantidad, onToggleAsiento, onLimpiarSeleccion }) {
+    const totalLibres = MAPA_ASIENTOS.length - ocupados.length;
+
     return (
         <div className="mb-3">
-            {/* Indicador del progreso de selección de asientos */}
-            <p className="fw-bold mb-2">
-                Selecciona {cantidad} asiento(s) · {seleccionados.length}/{cantidad} elegidos
+            {/* Progreso de selección e indicador de disponibilidad */}
+            <div className="d-flex justify-content-between align-items-center mb-1">
+                <p className="fw-bold mb-0">
+                    Selecciona {cantidad} asiento(s) · {seleccionados.length}/{cantidad} elegidos
+                </p>
+                {seleccionados.length > 0 && onLimpiarSeleccion && (
+                    <button
+                        type="button"
+                        className="btn btn-link btn-sm text-danger p-0 text-decoration-none"
+                        onClick={onLimpiarSeleccion}
+                    >
+                        Limpiar selección
+                    </button>
+                )}
+            </div>
+
+            {/* Contador de asientos disponibles vs ocupados en tiempo real */}
+            <p className="text-muted small mb-2">
+                🟢 {totalLibres} disponibles · 🔴 {ocupados.length} ocupados
             </p>
 
-            {/* Cuadrícula interactiva de asientos de la sala */}
+            {/* Cuadrícula de asientos */}
             <div className="seat-grid mb-2">
                 {MAPA_ASIENTOS.map((asiento) => {
-                    // Determina el estado del asiento actual
+                    // Determina el estado del asiento
                     const estaOcupado = ocupados.includes(asiento);
                     const estaSeleccionado = seleccionados.includes(asiento);
 
-                    // Asigna las clases CSS correspondientes según el estado del asiento
+                    // Aplica estilos según disponibilidad
                     let clase = "seat";
                     if (estaOcupado) clase += " seat-ocupado";
                     else if (estaSeleccionado) clase += " seat-seleccionado";
@@ -52,7 +67,7 @@ export default function SeatSelector({ ocupados, seleccionados, cantidad, onTogg
                 })}
             </div>
 
-            {/* Leyenda visual con la simbología de los estados de los asientos */}
+            {/* Leyenda de estados */}
             <div className="d-flex gap-3 small">
                 <span><span className="seat-legend seat-libre"></span> Libre</span>
                 <span><span className="seat-legend seat-seleccionado"></span> Seleccionado</span>
