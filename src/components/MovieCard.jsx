@@ -15,6 +15,16 @@ export default function MovieCard({ pelicula, onSeleccionarFuncion }) {
     // Controla errores de carga en la imagen del póster
     const [errorImagen, setErrorImagen] = useState(false);
 
+    // Color distintivo según la clasificación por edad
+    const claseClasificacion =
+        pelicula.clasificacion === "B"
+            ? "bg-success"
+            : pelicula.clasificacion === "B15"
+            ? "bg-warning text-dark"
+            : pelicula.clasificacion === "C"
+            ? "bg-danger"
+            : "bg-info text-dark";
+
     return (
         <div className="col-md-6 col-lg-4 mb-4">
             <div className="card h-100 shadow-sm movie-card">
