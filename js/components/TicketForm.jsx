@@ -1,39 +1,36 @@
-// Módulo de Miguel: Formulario de Compra, Selección de Asientos y Validación
+import React, { useState, useEffect } from "react";
+import SeatSelector from "./SeatSelector.jsx";
+import { MULTIPLICADOR_TIPO_BOLETO, formatearFecha } from "../data/peliculas.js";
+
+// Módulo de compra, selección de asientos y validación
 
 /**
- * Componente TicketForm
- * 
- * Gestiona el formulario principal de compra de boletos para la función seleccionada.
- * Permite al usuario ingresar sus datos personales, seleccionar la cantidad y tipo de boleto,
- * elegir los asientos disponibles mediante el componente SeatSelector y validar la información
- * antes de registrar la transacción.
+ * Administra el formulario de compra de boletos, datos del usuario y asignación de asientos.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Object} props.pelicula - Información de la película seleccionada (título, póster, etc.).
- * @param {Object} props.funcion - Datos de la función elegida (fecha, horario, sala, precio base).
- * @param {Array<string>} props.asientosOcupados - Asientos no disponibles para la función actual.
- * @param {Function} props.onConfirmarCompra - Callback que recibe el objeto de la compra confirmada.
- * @param {Function} props.onCancelar - Callback para cancelar el proceso y regresar a la cartelera.
- * @returns {JSX.Element} Elemento JSX que contiene la tarjeta con el formulario de compra.
+ * @param {Object} props.pelicula - Datos de la película seleccionada.
+ * @param {Object} props.funcion - Datos de la función (fecha, horario, sala y precio).
+ * @param {Array<string>} props.asientosOcupados - Asientos no disponibles para la función.
+ * @param {Function} props.onConfirmarCompra - Emite la compra completada.
+ * @param {Function} props.onCancelar - Cancela la operación y regresa a la vista principal.
+ * @returns {JSX.Element} Formulario de compra.
  */
-function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, onCancelar }) {
-    // Estados locales para el control del formulario y la selección del usuario
-    const [nombre, setNombre] = React.useState("");
-    const [apellido, setApellido] = React.useState("");
-    const [cantidad, setCantidad] = React.useState(1);
-    const [tipoBoleto, setTipoBoleto] = React.useState("General");
-    const [asientosSeleccionados, setAsientosSeleccionados] = React.useState([]);
-    const [errores, setErrores] = React.useState({});
+export default function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, onCancelar }) {
+    // Estados del formulario y selección de asientos
+    const [nombre, setNombre] = useState("");
+    const [apellido, setApellido] = useState("");
+    const [cantidad, setCantidad] = useState(1);
+    const [tipoBoleto, setTipoBoleto] = useState("General");
+    const [asientosSeleccionados, setAsientosSeleccionados] = useState([]);
+    const [errores, setErrores] = useState({});
 
-    // Sincroniza la lista de asientos seleccionados cuando el usuario reduce la cantidad de boletos
-    React.useEffect(() => {
+    // Ajusta la selección si disminuye la cantidad de boletos
+    useEffect(() => {
         setAsientosSeleccionados((prev) => prev.slice(0, cantidad));
     }, [cantidad]);
 
     /**
-     * Alterna la selección de un asiento.
-     * Si el asiento ya está seleccionado, lo retira de la lista;
-     * si no lo está y aún no se ha alcanzado la cantidad solicitada, lo añade.
+     * Alterna la selección de un asiento respetando el límite establecido.
      * 
      * @param {string} asiento - Identificador del asiento (ej. "A1").
      */
@@ -50,10 +47,9 @@ function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, on
     }
 
     /**
-     * Valida los datos ingresados en el formulario antes de procesar la compra.
-     * Comprueba campos obligatorios, rango permitido de boletos y coincidencia de asientos.
+     * Valida los campos obligatorios, el rango de boletos y los asientos seleccionados.
      * 
-     * @returns {boolean} Retorna true si todos los campos son válidos; de lo contrario, false.
+     * @returns {boolean} True si no existen errores de validación; false en caso contrario.
      */
     function validarFormulario() {
         const nuevosErrores = {};
@@ -76,25 +72,23 @@ function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, on
     }
 
     /**
-     * Procesa el envío del formulario de compra.
-     * Ejecuta la validación, calcula el precio unitario y total según el tipo de boleto,
-     * construye el objeto de compra estructurado e invoca la función de confirmación.
+     * Procesa la compra, calcula los totales y emite el registro final.
      * 
      * @param {Event} evento - Evento de envío del formulario.
      */
     function manejarEnvio(evento) {
         evento.preventDefault();
 
-        // Detiene el proceso si existen errores de validación
+        // Cancela el envío si la validación falla
         if (!validarFormulario()) {
             return;
         }
 
-        // Cálculo de costos unitario y total
+        // Calcula precios unitario y total
         const precioUnitario = funcion.precioBase * MULTIPLICADOR_TIPO_BOLETO[tipoBoleto];
         const total = precioUnitario * cantidad;
 
-        // Construcción del registro de compra
+        // Construye el objeto de compra
         const compra = {
             id: Date.now() + Math.floor(Math.random() * 1000),
             peliculaId: pelicula.id,
@@ -114,14 +108,14 @@ function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, on
             fecha: new Date().toISOString()
         };
 
-        // Notifica al componente padre sobre la compra realizada
+        // Emite los datos de la compra confirmada
         onConfirmarCompra(compra);
     }
 
     return (
         <div className="card shadow-sm">
             <div className="card-body">
-                {/* Encabezado con información de la película y función seleccionada */}
+                {/* Encabezado con datos de la película y función */}
                 <div className="d-flex align-items-center gap-3 mb-3">
                     {pelicula.posterUrl && (
                         <img
@@ -138,9 +132,9 @@ function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, on
                     </div>
                 </div>
 
-                {/* Formulario de captura de datos de compra */}
+                {/* Formulario de compra */}
                 <form onSubmit={manejarEnvio}>
-                    {/* Campos de datos personales del comprador */}
+                    {/* Datos del comprador */}
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <label className="form-label" htmlFor="nombre">Nombre</label>
@@ -170,7 +164,7 @@ function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, on
                         </div>
                     </div>
 
-                    {/* Configuración de cantidad y categoría del boleto */}
+                    {/* Cantidad y tipo de boleto */}
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <label className="form-label" htmlFor="cantidad">Cantidad de boletos</label>
@@ -202,23 +196,24 @@ function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, on
                         </div>
                     </div>
 
-                    {/* Módulo de selección de asientos en sala */}
+                    {/* Selector de asientos */}
                     <SeatSelector
                         ocupados={asientosOcupados}
                         seleccionados={asientosSeleccionados}
                         cantidad={cantidad}
                         onToggleAsiento={alternarAsiento}
+                        onLimpiarSeleccion={() => setAsientosSeleccionados([])}
                     />
                     {errores.asientos && (
                         <p className="text-danger small mb-3">{errores.asientos}</p>
                     )}
 
-                    {/* Indicador del costo total calculado */}
+                    {/* Total a pagar */}
                     <p className="fw-bold fs-5">
                         Total: ${(funcion.precioBase * MULTIPLICADOR_TIPO_BOLETO[tipoBoleto] * cantidad).toFixed(2)}
                     </p>
 
-                    {/* Botones de acción para confirmar o cancelar */}
+                    {/* Acciones de compra */}
                     <div className="d-flex gap-2">
                         <button type="submit" className="btn btn-danger">Confirmar compra</button>
                         <button type="button" className="btn btn-outline-secondary" onClick={onCancelar}>
@@ -230,4 +225,3 @@ function TicketForm({ pelicula, funcion, asientosOcupados, onConfirmarCompra, on
         </div>
     );
 }
-

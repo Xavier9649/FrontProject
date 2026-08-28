@@ -1,3 +1,7 @@
+import React from "react";
+import { formatearFecha } from "../data/peliculas.js";
+import { generarBoletoPDF } from "../utils/pdfBoleto.js";
+
 // Módulo de Miguel: Resumen y Confirmación de Compra
 
 /**
@@ -13,7 +17,7 @@
  * @param {Function} props.onVerHistorial - Función callback para navegar al historial de compras.
  * @returns {JSX.Element} Elemento JSX que contiene la tarjeta de confirmación de compra.
  */
-function PurchaseSummary({ compra, onVolverCartelera, onVerHistorial }) {
+export default function PurchaseSummary({ compra, onVolverCartelera, onVerHistorial }) {
     return (
         <div className="card shadow-sm border-success">
             <div className="card-body">
@@ -55,4 +59,3 @@ function PurchaseSummary({ compra, onVolverCartelera, onVerHistorial }) {
         </div>
     );
 }
-

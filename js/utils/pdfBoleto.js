@@ -1,4 +1,6 @@
-// Módulo de Miguel: Generación y Descarga del Boleto en PDF (utiliza jsPDF por CDN)
+// Módulo de Miguel: Generación y Descarga del Boleto en PDF
+import { jsPDF } from "jspdf";
+import { formatearFecha } from "../data/peliculas.js";
 
 /**
  * Función generarBoletoPDF
@@ -8,22 +10,8 @@
  * en el navegador del usuario.
  * 
  * @param {Object} compra - Objeto con los datos de la compra registrada.
- * @param {number|string} compra.id - Identificador único de la compra.
- * @param {string} compra.peliculaTitulo - Título de la película.
- * @param {string} compra.fechaFuncion - Fecha de la función en formato ISO (YYYY-MM-DD).
- * @param {string} compra.horario - Horario de la función (ej. "14:00").
- * @param {string} compra.sala - Nombre de la sala (ej. "Sala 1").
- * @param {string} compra.nombre - Nombre del cliente.
- * @param {string} compra.apellido - Apellido del cliente.
- * @param {string} compra.tipoBoleto - Categoría de boleto (General, Preferencial, VIP).
- * @param {Array<string>} compra.asientos - Lista de asientos asignados.
- * @param {number} compra.cantidad - Número de boletos comprados.
- * @param {number} compra.total - Importe total cancelado.
- * @param {string} compra.fecha - Fecha y hora de creación de la transacción en formato ISO.
  */
-function generarBoletoPDF(compra) {
-    const { jsPDF } = window.jspdf;
-
+export function generarBoletoPDF(compra) {
     // Configura el formato del documento: dimensiones compactas estilo recibo de cine (80mm x 150mm)
     const doc = new jsPDF({ unit: "mm", format: [80, 150] });
     const centro = 40;
@@ -93,4 +81,3 @@ function generarBoletoPDF(compra) {
     // Guarda el archivo y dispara la descarga en el navegador
     doc.save("boleto_" + compra.id + ".pdf");
 }
-
