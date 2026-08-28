@@ -1,5 +1,27 @@
+# Dependencias
+node_modules/
+
+# Producción
+dist/
+dist-ssr/
+*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# Entornos y SO
+.env
+.env.local
+.env.*.local
 .DS_Store
 Thumbs.db
 .vscode/
-*.log
-README.md
+
+# Proyectos
+archivos_companeros/
+parches/

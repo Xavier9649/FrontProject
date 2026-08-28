@@ -1,34 +1,29 @@
 import React, { useState } from "react";
 import { formatearFecha } from "../data/peliculas.js";
 
-// Tarjeta de película y funciones disponibles
+// Módulo de Erick: Tarjeta de Presentación de Película y sus Funciones
 
 /**
- * Muestra la ficha de una película con póster, datos técnicos y horarios de funciones.
+ * Componente MovieCard
+ * 
+ * Presenta la información individual de una película en la cartelera.
+ * Incluye su póster promocional (con respaldo de color si la imagen no carga),
+ * detalles de género, clasificación por edad, duración en minutos y los botones
+ * interactivos de cada una de sus funciones programadas.
  * 
  * @param {Object} props - Propiedades del componente.
- * @param {Object} props.pelicula - Datos de la película.
- * @param {Function} props.onSeleccionarFuncion - Inicia el flujo de compra para la función elegida.
- * @returns {JSX.Element} Tarjeta de película.
+ * @param {Object} props.pelicula - Datos de la película (título, póster, género, clasificación, funciones, etc.).
+ * @param {Function} props.onSeleccionarFuncion - Callback que se ejecuta al seleccionar una función para iniciar la compra.
+ * @returns {JSX.Element} Elemento JSX que contiene la tarjeta de la película.
  */
 export default function MovieCard({ pelicula, onSeleccionarFuncion }) {
-    // Controla errores de carga en la imagen del póster
+    // Estado local para controlar si la imagen remota del póster presenta un error de carga
     const [errorImagen, setErrorImagen] = useState(false);
-
-    // Color distintivo según la clasificación por edad
-    const claseClasificacion =
-        pelicula.clasificacion === "B"
-            ? "bg-success"
-            : pelicula.clasificacion === "B15"
-            ? "bg-warning text-dark"
-            : pelicula.clasificacion === "C"
-            ? "bg-danger"
-            : "bg-info text-dark";
 
     return (
         <div className="col-md-6 col-lg-4 mb-4">
             <div className="card h-100 shadow-sm movie-card">
-                {/* Póster con imagen remota o color de respaldo */}
+                {/* Póster de la película: usa imagen remota o cuadro con color de respaldo */}
                 {!pelicula.posterUrl || errorImagen ? (
                     <div
                         className="movie-poster"

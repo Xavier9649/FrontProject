@@ -1,3 +1,6 @@
+import React from "react";
+import { formatearFecha } from "../data/peliculas.js";
+
 // Módulo de Jorge: Panel de Estadísticas Calculadas a partir de las Compras Guardadas
 
 /**
@@ -11,7 +14,7 @@
  * @param {Array<Object>} props.compras - Listado de todas las compras registradas en el sistema.
  * @returns {JSX.Element} Elemento JSX con las tarjetas informativas y gráficos de barras de progreso.
  */
-function Statistics({ compras }) {
+export default function Statistics({ compras }) {
     // Si no existen compras en el historial, muestra un mensaje informativo
     if (compras.length === 0) {
         return (
